@@ -73,8 +73,8 @@ public class AuthenticationActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    startActivity(new Intent(this, ProductActivityScreen.class));
                 }
-                startActivity(new Intent(this, ProductActivityScreen.class));
             });
         });
 
