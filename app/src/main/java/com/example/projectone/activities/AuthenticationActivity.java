@@ -1,21 +1,17 @@
 package com.example.projectone.activities;
 
-import static android.content.ContentValues.TAG;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.projectone.R;
-import com.example.projectone.activities.ProductActivityScreen;
 import com.example.projectone.pojo.Cart;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -69,7 +65,8 @@ public class AuthenticationActivity extends AppCompatActivity {
 
             auth.signInWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    db.collection("cart").whereEqualTo("userId", FirebaseAuth.getInstance().getUid()).get().addOnCompleteListener(task1 -> {
+                    db.collection("cart").whereEqualTo("userId",
+                            FirebaseAuth.getInstance().getUid()).get().addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task1.getResult()) {
                                 preferences.edit().putString("cartId", document.getId()).apply();
@@ -109,18 +106,21 @@ public class AuthenticationActivity extends AppCompatActivity {
                 return;
             }
 
-            auth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(task -> {
+            auth.createUserWithEmailAndPassword(email.getText().toString(),
+                    password.getText().toString()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(this, "You have successfully registered.", Toast.LENGTH_SHORT).show();
 
                     db.collection("cart").add(new Cart(FirebaseAuth.getInstance().getUid())).addOnCompleteListener(t -> {
                         preferences.edit().putString("cartId", t.getResult().getId()).apply();
                     });
-                    startActivity(new Intent(this, ProductActivityScreen.class));
+                    Toast.makeText(this, "User created successfully.", Toast.LENGTH_SHORT).show();
+//                    startActivity(new Intent(this, ProductActivityScreen.class));
                 }
 
                 if (task.isCanceled()) {
-                    Toast.makeText(this, Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, Objects.requireNonNull(task.getException()).toString(),
+                            Toast.LENGTH_SHORT).show();
                 }
 
                 task.addOnFailureListener(e -> {
